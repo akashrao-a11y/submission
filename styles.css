@@ -1,8 +1,8 @@
 header,
 section,
 div {
-    padding-top: 100px;
-    padding-bottom: 100px;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
 
 body {
@@ -278,8 +278,8 @@ header span {
 #skills .skill-box {
     background: #fff8e1;
     width: 320px;
-    min-height: 220px; /* Ensures all boxes have at least this height */
-    height: 220px;     /* Forces all boxes to be the same height */
+    min-height: 220px;
+    height: 220px;
     padding: 16px;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(228, 37, 37, 0.16);
@@ -291,7 +291,6 @@ header span {
     justify-content: space-between;
 }
 
-/* Borders for each box */
 #skills .skill-box:nth-child(1) {
     border-left: 5px solid #ffb74d;
 }
@@ -304,7 +303,6 @@ header span {
     border-left: 5px solid #ffd180;
 }
 
-/* Titles */
 #skills h3 {
     font-size: 18px;
     margin-bottom: 8px;
@@ -312,7 +310,6 @@ header span {
     color: #e42525;
 }
 
-/* List items inline */
 #skills ul {
     padding: 0;
     margin: 0;
@@ -331,9 +328,40 @@ header span {
     color: #e42525;
 }
 
-/* Hover effect for each skill box */
 #skills .skill-box:hover {
     transform: translateY(-4px) scale(1.03);
     box-shadow: 0 6px 15px rgba(228, 37, 37, 0.22);
     z-index: 1;
+}
+
+/* Footer github logo button */
+
+
+.github-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: #b54f4f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(181, 79, 79, 0.15);
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.github-logo {
+    transition: transform 0.1s;
+}
+
+.github-btn:hover .github-logo {
+    transform: scale(1.15) rotate(-8deg);
+}
+
+.github-btn:hover {
+    background: #8c3939;
+    box-shadow: 0 4px 16px rgba(181, 79, 79, 0.25);
 }
