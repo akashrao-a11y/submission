@@ -50,7 +50,8 @@ button:hover {
 
 header {
     background-color: #ffd180;
-    background-image: url(https://unsplash.it/1900/700?image=234);
+    /* background-image: url(https://unsplash.it/1900/700?image=234); */
+    background-image: url(Assest/Webpage-banner.jpg);
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
@@ -58,10 +59,12 @@ header {
 
 header h1 {
     color: white;
+    text-shadow: 1px 1px 0 #000, 0 0 1px #000;
 }
 
 header span {
     color: rgb(240, 211, 23);
+    text-shadow: 1px 1px 0 #000, 0 0 1px #000;
 }
 
 
