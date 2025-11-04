@@ -23,13 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato",
         "turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"
     ];
- 
+
     const container = document.getElementById("colorContainer");
     const showBtn = document.getElementById("showBtn");
     const removeBtn = document.getElementById("removeBtn");
     const darkModeBtn = document.getElementById("darkModeBtn");
     let darkMode = false;
- 
+
     // Show Colors
     showBtn.addEventListener("click", () => {
         try {
@@ -38,12 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const div = document.createElement("div");
                 div.classList.add("box");
                 div.style.backgroundColor = color;
- 
+
                 // Adjust text color for dark backgrounds
                 const darkBg = ["black", "blue", "darkblue", "navy", "indigo", "darkgreen",
                                 "darkslategray", "midnightblue", "darkred", "purple"];
                 if (darkBg.includes(color)) div.style.color = "white";
- 
+
                 div.textContent = color;
                 container.appendChild(div);
             });
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Something went wrong while displaying colors!");
         }
     });
- 
+
     // Remove Colors
     removeBtn.addEventListener("click", () => {
         try {
@@ -62,14 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Could not remove colors!");
         }
     });
- 
+
     // Dark Mode Toggle
     darkModeBtn.addEventListener("click", () => {
         try {
             darkMode = !darkMode;
             document.body.style.backgroundColor = darkMode ? "#1e1e1e" : "#f5f5f5";
             const boxes = document.querySelectorAll(".box");
- 
+
             boxes.forEach(box => {
                 const bgColor = box.style.backgroundColor;
                 // Change outline if background matches the page background

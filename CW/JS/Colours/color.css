@@ -5,15 +5,15 @@ body {
     padding: 20px;
     transition: background-color 0.3s;
 }
- 
+
 h1 {
     margin-bottom: 20px;
 }
- 
+
 .controls {
     margin-bottom: 20px;
 }
- 
+
 button {
     margin: 5px;
     padding: 10px 15px;
@@ -25,18 +25,18 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
 }
- 
+
 button:hover {
     background-color: #005fa3;
 }
- 
+
 .boxes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
     justify-items: center;
 }
- 
+
 .box {
     width: 120px;
     height: 80px;
