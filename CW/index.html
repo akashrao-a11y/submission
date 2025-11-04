@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Expense Monitor — Single File App</title>
+  <style>
+    :root{--bg:#f6f9fc;--card:#fff;--muted:#6b7280;--accent:#0ea5e9;--accent-2:#06b6d4}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); margin:0; padding:24px; color:#0f172a}
+    .app{max-width:980px;margin:0 auto}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 22px rgba(10,10,10,0.06)}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:13px}
+    form{display:grid;grid-template-columns:1fr 120px 160px 130px;gap:10px;margin-top:14px}
+    input,select{padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:14px}
+    .btn{padding:10px 12px;border-radius:8px;border:none;cursor:pointer}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid #e6e9ef}
+    .controls{display:flex;gap:8px;align-items:center}
+    .summary{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+    .card-sm{background:#fbfdff;padding:12px;border-radius:10px;min-width:150px;box-shadow:inset 0 0 0 1px #eef2f7}
+    .list{margin-top:14px;border-top:1px solid #f1f5f9}
+    .item{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-bottom:1px dashed #f1f5f9}
+    .meta{display:flex;gap:12px;align-items:center}
+    .badge{padding:6px 8px;border-radius:6px;font-weight:600;font-size:12px;background:#f1f5f9}
+    .chart-wrap{display:flex;gap:18px;align-items:center;margin-top:18px}
+    .pie{width:220px;height:220px}
+    .no-data{padding:18px;color:var(--muted)}
+    @media(max-width:760px){form{grid-template-columns:1fr} .chart-wrap{flex-direction:column} .pie{width:180px;height:180px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <header>
+        <div>
+          <h1>Expense Monitor</h1>
+          <div class="muted">Track expenses, filter by month, export CSV — single file app</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-ghost" id="btn-new">New</button>
+          <button class="btn btn-ghost" id="btn-export">Export CSV</button>
+          <button class="btn btn-ghost" id="btn-clear">Clear All</button>
+        </div>
+      </header>
+
+      <form id="expense-form">
+        <input id="title" placeholder="Title (e.g., Coffee, Rent)" required />
+        <input id="amount" placeholder="Amount" type="number" min="0.01" step="0.01" required />
+        <select id="category">
+          <option>Misc</option>
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Shopping</option>
+          <option>Bills</option>
+          <option>Health</option>
+        </select>
+        <input id="date" type="month" />
+
+        <div style="grid-column:1 / -1;display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+          <button type="submit" class="btn btn-primary" id="btn-save">Add Expense</button>
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+        </div>
+      </form>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-top:12px">
+        <label class="muted">Filter:</label>
+        <select id="filter-month"><option value="all">All Months</option></select>
+        <div style="flex:1"></div>
+        <div class="muted">Total: <strong id="total">0</strong></div>
+      </div>
+
+      <div class="summary" id="summary"></div>
+
+      <div class="chart-wrap">
+        <div id="chart" class="pie"></div>
+        <div style="flex:1">
+          <div class="list" id="list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Single-file Expense Monitor
+    (function(){
+      const LS_KEY = 'expenses_v1';
+      const el = id => document.getElementById(id);
+      const $form = el('expense-form');
+      const $title = el('title');
+      const $amount = el('amount');
+      const $category = el('category');
+      const $date = el('date');
+      const $filter = el('filter-month');
+      const $list = el('list');
+      const $summary = el('summary');
+      const $total = el('total');
+
+      let expenses = load();
+      let editingId = null;
+
+      // initialize
+      init();
+
+      function init(){
+        // set default month input to current month
+        const now = new Date();
+        const monthStr = now.toISOString().slice(0,7);
+        $date.value = monthStr;
+
+        populateFilterOptions();
+        render();
+
+        $form.addEventListener('submit', onSubmit);
+        el('btn-export').addEventListener('click', exportCSV);
+        el('btn-clear').addEventListener('click', clearAll);
+        el('btn-new').addEventListener('click', ()=>{ editingId=null; resetForm(); $title.focus(); });
+        el('btn-cancel').addEventListener('click', (e)=>{ e.preventDefault(); editingId=null; resetForm(); });
+        $filter.addEventListener('change', render);
+      }
+
+      function save(){ localStorage.setItem(LS_KEY, JSON.stringify(expenses)); }
+      function load(){ try{ const raw=localStorage.getItem(LS_KEY); return raw? JSON.parse(raw): sample(); }catch(e){ return sample(); } }
+
+      function sample(){ return [
+        {id:id(), title:'Coffee', amount:2.5, category:'Food', date: monthStrOffset(0)},
+        {id:id(), title:'Groceries', amount:35.2, category:'Food', date: monthStrOffset(0)},
+        {id:id(), title:'Bus pass', amount:12, category:'Transport', date: monthStrOffset(0)},
+        {id:id(), title:'Electric bill', amount:25, category:'Bills', date: monthStrOffset(-1)}
+      ]; }
+
+      function id(){ return Math.random().toString(36).slice(2,9); }
+      function monthStrOffset(offset){ const d=new Date(); d.setMonth(d.getMonth()+offset); return d.toISOString().slice(0,7); }
+
+      function onSubmit(e){ e.preventDefault(); const t=$title.value.trim(); const a=parseFloat($amount.value); if(!t||!a)return alert('Enter title and amount'); const rec = { title:t, amount: Math.round(a*100)/100, category:$category.value, date:$date.value || monthStrOffset(0)};
+        if(editingId){ rec.id = editingId; expenses = expenses.map(x=> x.id===editingId? rec: x); editingId=null; el('btn-save').textContent='Add Expense'; }
+        else{ rec.id = id(); expenses.unshift(rec); }
+        save(); resetForm(); populateFilterOptions(); render(); }
+
+      function resetForm(){ $title.value=''; $amount.value=''; $category.value='Misc'; $date.value = new Date().toISOString().slice(0,7); }
+
+      function editItem(item){ editingId = item.id; $title.value=item.title; $amount.value=item.amount; $category.value=item.category; $date.value=item.date; el('btn-save').textContent='Save Changes'; }
+      function deleteItem(id){ if(!confirm('Delete this expense?')) return; expenses = expenses.filter(x=> x.id!==id); save(); populateFilterOptions(); render(); }
+      function clearAll(){ if(!confirm('Clear all expenses?')) return; expenses=[]; save(); populateFilterOptions(); render(); }
+
+      function exportCSV(){ if(!expenses.length) return alert('No data'); const rows = [['id','title','amount','category','date'], ...expenses.map(e=>[e.id, '"'+(e.title||'')+'"', e.amount, e.category, e.date])]; const csv = rows.map(r=>r.join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='expenses.csv'; a.click(); URL.revokeObjectURL(url); }
+
+      function populateFilterOptions(){ const set = new Set(expenses.map(e=>e.date)); const arr = Array.from(set).sort((a,b)=> b.localeCompare(a)); // latest first
+        // keep currently selected if exists
+        const cur = $filter.value || 'all';
+        $filter.innerHTML = '<option value="all">All Months</option>' + arr.map(x=>`<option value="${x}">${x}</option>`).join('');
+        if(arr.includes(cur)) $filter.value = cur; }
+
+      function filtered(){ const f = $filter.value; if(f==='all') return expenses; return expenses.filter(e=> e.date===f); }
+
+      function render(){ const data = filtered(); renderList(data); renderSummary(data); renderChart(data); const tot = data.reduce((s,x)=> s + Number(x.amount), 0); $total.textContent = tot.toFixed(2); }
+
+      function renderList(data){ if(!data.length){ $list.innerHTML = '<div class="no-data">No expenses for selected month.</div>'; return; }
+        $list.innerHTML = data.map(d=>`
+          <div class="item">
+            <div class="meta">
+              <div style="min-width:220px"><strong>${escape(d.title)}</strong><div class="muted">${d.date}</div></div>
+              <div class="badge">${escape(d.category)}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div><strong>₹ ${Number(d.amount).toFixed(2)}</strong></div>
+              <button class="btn btn-ghost" data-id="${d.id}" data-action="edit">Edit</button>
+              <button class="btn btn-ghost" data-id="${d.id}" data-action="del">Delete</button>
+            </div>
+          </div>
+        `).join('');
+
+        // attach handlers
+        $list.querySelectorAll('button').forEach(b=> b.addEventListener('click', (ev)=>{
+          const id = ev.currentTarget.dataset.id; const action = ev.currentTarget.dataset.action; const item = expenses.find(x=> x.id===id);
+          if(action==='edit') editItem(item); else if(action==='del') deleteItem(id);
+        }));
+      }
+
+      function renderSummary(data){ const map = {}; data.forEach(d=> map[d.category] = (map[d.category]||0) + Number(d.amount)); const items = Object.entries(map).map(([k,v])=> ({k,v})).sort((a,b)=> b.v - a.v);
+        if(!items.length){ $summary.innerHTML = '<div class="card-sm">No summary</div>'; return; }
+        $summary.innerHTML = items.map(it=> `<div class="card-sm"><div style="font-weight:700">${escape(it.k)}</div><div class="muted">₹ ${it.v.toFixed(2)}</div></div>`).join(''); }
+
+      // Simple SVG pie chart
+      function renderChart(data){ const map = {}; data.forEach(d=> map[d.category] = (map[d.category]||0) + Number(d.amount)); const entries = Object.entries(map); const elChart = document.getElementById('chart'); elChart.innerHTML=''; if(!entries.length){ elChart.innerHTML = '<div class="no-data">No chart data</div>'; return; }
+        const total = entries.reduce((s,e)=> s + e[1], 0);
+        const colors = ['#06b6d4','#fb7185','#f97316','#34d399','#60a5fa','#a78bfa','#f59e0b','#ef4444'];
+        const size = 220; const cx = size/2, cy = size/2, r = 90; let angle = -90; const svgns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgns,'svg'); svg.setAttribute('viewBox',`0 0 ${size} ${size}`); svg.setAttribute('class','pie');
+        entries.forEach((e,i)=>{
+          const [cat, val] = e; const portion = val/total; const delta = portion * 360; const start = angle; const end = angle + delta; const large = delta>180?1:0;
+          const startRad = (Math.PI/180)*start; const endRad = (Math.PI/180)*end;
+          const x1 = cx + r * Math.cos(startRad); const y1 = cy + r * Math.sin(startRad);
+          const x2 = cx + r * Math.cos(endRad); const y2 = cy + r * Math.sin(endRad);
+          const path = document.createElementNS(svgns,'path');
+          const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+          path.setAttribute('d',d); path.setAttribute('fill', colors[i % colors.length]); svg.appendChild(path);
+          angle = end;
+        });
+        // center label
+        const txt = document.createElementNS(svgns,'text'); txt.setAttribute('x',cx); txt.setAttribute('y',cy+6); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','14'); txt.setAttribute('fill','#0f172a'); txt.textContent = 'Expenses'; svg.appendChild(txt);
+        elChart.appendChild(svg);
+      }
+
+      function escape(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    })();
+  </script>
+</body>
+</html>
