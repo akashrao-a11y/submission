@@ -1,14 +1,14 @@
-// const values = [5, 3, 'sriram', 2];
+const values = [5, 3, 'sriram', 2];
 
-// let sum = 0;
+let sum = 0;
 
-// for (let i = 0; i < values.length; i++) {
-//     if (typeof values[i] === 'number') {
-//         sum += values[i];
-//     }
-// }
+for (let i = 0; i < values.length; i++) {
+    if (typeof values[i] === 'number') {
+        sum += values[i];
+    }
+}
 
-// console.log('Sum of numbers:', sum);
+console.log('Sum of numbers:', sum);
 // --------------------------------------------------------------------
 var b1=[5,3,"sriram",2];
 let sum=0;
