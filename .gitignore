@@ -1,4 +1,17 @@
 myproject/
 my-react-app/
-my-react-app/node_modules/
-manual-react-app/node_modules/
+
+# Node modules - ignore in all directories
+**/node_modules/
+node_modules/
+
+# Package lock files
+**/package-lock.json
+
+# Environment files
+**/.env
+.env
+
+# Build outputs
+**/build/
+**/dist/
