@@ -5,22 +5,25 @@ import App from './App';
 import About from './components/About';
 import Contact from './components/Contact';
 import Login from './components/Login';
+import LandingPage from './components/LandingPage';
 
 function MainContent() {
     const location = useLocation();
-    const isLoginPage = location.pathname === '/';
+    const isLoginPage = location.pathname === '/login';
+    const isLandingPage = location.pathname === '/';
 
     return (
         <div>
-            {!isLoginPage && <Topbarlayout />}
+            {!isLoginPage && !isLandingPage && <Topbarlayout />}
             <div
                 style={{
-                    marginTop: isLoginPage ? '0' : '80px',
-                    minHeight: isLoginPage ? '100vh' : 'calc(100vh - 80px)',
+                    marginTop: (isLoginPage || isLandingPage) ? '0' : '80px',
+                    minHeight: (isLoginPage || isLandingPage) ? '100vh' : 'calc(100vh - 80px)',
                 }}
             >
                 <Routes>
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<App />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
