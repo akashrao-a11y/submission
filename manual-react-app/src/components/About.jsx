@@ -1,13 +1,14 @@
 import React from 'react';
 
 const theme = {
-    borderColor: '#1976d2',
+    borderColor: '#2d2d44',
     borderRadius: 12,
     padding: '2rem',
     marginBottom: '1.5rem',
-    cardBg: '#fff',
-    textColor: '#333',
-    accentColor: '#1976d2',
+    cardBg: '#1a1a2e',
+    textColor: '#e0e0e0',
+    accentColor: '#00d4ff',
+    subtextColor: '#b0b0b0',
 };
 
 function About() {
@@ -26,7 +27,7 @@ function About() {
                     borderRadius: theme.borderRadius,
                     marginBottom: theme.marginBottom,
                     background: theme.cardBg,
-                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.07)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
                 }}
             >
                 <h1 style={{ color: theme.accentColor, marginBottom: '1.5rem' }}>
@@ -57,7 +58,7 @@ function About() {
                     borderRadius: theme.borderRadius,
                     marginBottom: theme.marginBottom,
                     background: theme.cardBg,
-                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.07)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
                 }}
             >
                 <h2 style={{ color: theme.accentColor, marginBottom: '1rem' }}>
@@ -82,7 +83,7 @@ function About() {
                     padding: theme.padding,
                     borderRadius: theme.borderRadius,
                     background: theme.cardBg,
-                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.07)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
                 }}
             >
                 <h2 style={{ color: theme.accentColor, marginBottom: '1rem' }}>

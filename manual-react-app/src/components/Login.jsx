@@ -63,6 +63,12 @@ function Login() {
         setIsLoading(false);
 
         if (result.success) {
+            // Store authentication data
+            if (result.token) {
+                localStorage.setItem('token', result.token);
+            }
+            localStorage.setItem('user', JSON.stringify({ email }));
+            
             alert('Login successful!');
             navigate('/home');
         } else {
@@ -83,14 +89,15 @@ function Login() {
         maxWidth: '400px',
         margin: '2rem auto',
         padding: '2rem',
-        background: 'white',
+        background: '#1a1a2e',
         borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+        border: '1px solid #2d2d44',
     };
 
     const headingStyle = {
         textAlign: 'center',
-        color: '#1976d2',
+        color: '#00d4ff',
         marginBottom: '1.5rem',
         fontSize: '2rem',
         fontWeight: 600,
@@ -103,7 +110,7 @@ function Login() {
     const labelStyle = {
         display: 'block',
         marginBottom: '0.5rem',
-        color: '#333',
+        color: '#b0b0b0',
         fontWeight: 500,
         fontSize: '14px',
     };
@@ -112,10 +119,12 @@ function Login() {
         width: '100%',
         padding: '0.75rem',
         fontSize: '16px',
-        border: '1px solid #ddd',
+        border: '1px solid #2d2d44',
         borderRadius: '8px',
         boxSizing: 'border-box',
-        transition: 'border-color 0.3s ease',
+        transition: 'border-color 0.3s ease, background 0.3s ease',
+        background: '#0f0f23',
+        color: '#e0e0e0',
     };
 
     const buttonStyle = {
@@ -123,18 +132,18 @@ function Login() {
         padding: '0.875rem',
         fontSize: '16px',
         fontWeight: 600,
-        color: 'white',
-        background: '#1976d2',
+        color: '#0f0f23',
+        background: '#00d4ff',
         border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
-        transition: 'background 0.3s ease',
+        transition: 'background 0.3s ease, transform 0.2s ease',
     };
 
     const toggleButtonStyle = {
         background: 'none',
         border: 'none',
-        color: '#1976d2',
+        color: '#00d4ff',
         cursor: 'pointer',
         fontSize: '14px',
         textDecoration: 'underline',
@@ -164,8 +173,8 @@ function Login() {
                                 onChange={(e) => setFullName(e.target.value)}
                                 style={inputStyle}
                                 placeholder="Enter your full name"
-                                onFocus={(e) => e.target.style.borderColor = '#1976d2'}
-                                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                                onFocus={(e) => e.target.style.borderColor = '#00d4ff'}
+                                onBlur={(e) => e.target.style.borderColor = '#2d2d44'}
                                 required
                             />
                         </div>
@@ -183,8 +192,8 @@ function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         style={inputStyle}
                         placeholder="Enter your email"
-                        onFocus={(e) => e.target.style.borderColor = '#1976d2'}
-                        onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                        onFocus={(e) => e.target.style.borderColor = '#00d4ff'}
+                        onBlur={(e) => e.target.style.borderColor = '#2d2d44'}
                         required
                     />
                 </div>
@@ -200,8 +209,8 @@ function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         style={inputStyle}
                         placeholder="Enter your password"
-                        onFocus={(e) => e.target.style.borderColor = '#1976d2'}
-                        onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                        onFocus={(e) => e.target.style.borderColor = '#00d4ff'}
+                        onBlur={(e) => e.target.style.borderColor = '#2d2d44'}
                         required
                     />
                 </div>
@@ -218,8 +227,8 @@ function Login() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             style={inputStyle}
                             placeholder="Confirm your password"
-                            onFocus={(e) => e.target.style.borderColor = '#1976d2'}
-                            onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                            onFocus={(e) => e.target.style.borderColor = '#00d4ff'}
+                            onBlur={(e) => e.target.style.borderColor = '#2d2d44'}
                             required
                         />
                     </div>
@@ -228,8 +237,8 @@ function Login() {
                 <button
                     type="submit"
                     style={buttonStyle}
-                    onMouseOver={(e) => e.target.style.background = '#1565c0'}
-                    onMouseOut={(e) => e.target.style.background = '#1976d2'}
+                    onMouseOver={(e) => e.target.style.background = '#00b8d4'}
+                    onMouseOut={(e) => e.target.style.background = '#00d4ff'}
                     disabled={isLoading}
                 >
                     {isLoading ? 'Please wait...' : (isRegisterMode ? 'Register' : 'Login')}

@@ -3,16 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateField, submitForm } from '../formSlice';
 
 const theme = {
-    borderColor: '#1976d2',
+    borderColor: '#2d2d44',
     borderRadius: 12,
     padding: '2rem',
     marginBottom: '1.5rem',
-    inputBg: '#f5f7fa',
-    inputBorder: '#90caf9',
-    inputFocus: '#1976d2',
-    buttonBg: '#1976d2',
-    buttonColor: '#fff',
-    buttonHover: '#1565c0',
+    inputBg: '#0f0f23',
+    inputBorder: '#2d2d44',
+    inputFocus: '#00d4ff',
+    buttonBg: '#00d4ff',
+    buttonColor: '#0f0f23',
+    buttonHover: '#00b8d4',
+    cardBg: '#1a1a2e',
+    textColor: '#e0e0e0',
+    accentColor: '#00d4ff',
 };
 
 function FormComponent() {
@@ -35,11 +38,11 @@ function FormComponent() {
                 padding: theme.padding,
                 borderRadius: theme.borderRadius,
                 marginBottom: theme.marginBottom,
-                background: '#fff',
-                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.07)',
+                background: theme.cardBg,
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
             }}
         >
-            <h2 style={{ color: theme.borderColor, marginBottom: 24 }}>Form Component</h2>
+            <h2 style={{ color: theme.accentColor, marginBottom: 24 }}>Form Component</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     name="username"
@@ -119,15 +122,15 @@ function FormComponent() {
                 style={{
                     marginTop: 32,
                     padding: 16,
-                    border: `1px solid ${theme.inputBorder}`,
+                    border: `1px solid ${theme.borderColor}`,
                     borderRadius: 8,
-                    background: '#f9f9f9',
+                    background: '#0f0f23',
                 }}
             >
-                <h3 style={{ marginBottom: 12, color: theme.borderColor }}>Submitted Box (Live)</h3>
-                <div><strong>Username:</strong> {fields.username}</div>
-                <div><strong>Email:</strong> {fields.email}</div>
-                <div><strong>Password:</strong> {fields.password}</div>
+                <h3 style={{ marginBottom: 12, color: theme.accentColor }}>Submitted Box (Live)</h3>
+                <div style={{ color: theme.textColor }}><strong>Username:</strong> {fields.username}</div>
+                <div style={{ color: theme.textColor }}><strong>Email:</strong> {fields.email}</div>
+                <div style={{ color: theme.textColor }}><strong>Password:</strong> {fields.password}</div>
             </div>
         </div>
     );

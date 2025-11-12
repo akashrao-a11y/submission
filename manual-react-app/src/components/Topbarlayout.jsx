@@ -1,19 +1,47 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const theme = {
-    topBarBg: '#1976d2',
-    topBarColor: '#fff',
-    linkHover: '#1565c0',
-    linkActiveBg: 'rgba(255, 255, 255, 0.15)',
-    shadow: '0 2px 8px rgba(25, 118, 210, 0.2)',
-    borderBottom: '#90caf9',
+    topBarBg: '#1a1a2e',
+    topBarColor: '#e0e0e0',
+    linkHover: '#00d4ff',
+    linkActiveBg: 'rgba(0, 212, 255, 0.15)',
+    shadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+    borderBottom: '#2d2d44',
+    accentColor: '#00d4ff',
 };
 
 function Topbarlayout() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Clear any stored authentication data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        // Show logout confirmation
+        alert('You have been logged out successfully!');
+        
+        // Navigate to login page
+        navigate('/');
+    };
+
     const navLinkStyle = {
         color: theme.topBarColor,
         textDecoration: 'none',
+        padding: '0.75rem 1.5rem',  
+        fontSize: '16px',
+        fontWeight: 600,
+        transition: 'all 0.3s ease',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        display: 'inline-block',
+    };
+
+    const logoutButtonStyle = {
+        color: theme.topBarColor,
+        background: 'rgba(0, 212, 255, 0.2)',
+        border: '1px solid rgba(0, 212, 255, 0.4)',
         padding: '0.75rem 1.5rem',  
         fontSize: '16px',
         fontWeight: 600,
@@ -91,6 +119,20 @@ function Topbarlayout() {
                 >
                     Contact
                 </Link>
+                <button
+                    onClick={handleLogout}
+                    style={logoutButtonStyle}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 212, 255, 0.3)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                >
+                    Logout
+                </button>
             </div>
         </nav>
     );
