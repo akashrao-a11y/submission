@@ -74,7 +74,7 @@ function Topbarlayout() {
                 color: theme.topBarColor,
                 letterSpacing: '-0.5px',
             }}>
-                MyApp
+                GoLearn
             </div>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <Link

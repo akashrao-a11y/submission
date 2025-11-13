@@ -39,7 +39,7 @@ function About() {
                     color: theme.textColor,
                     marginBottom: '1rem',
                 }}>
-                    Welcome to MyApp! We are dedicated to providing the best experience for our users.
+                    Welcome to GoLearn! We are dedicated to providing the best experience for our users.
                 </p>
                 <p style={{ 
                     fontSize: '1.1rem', 
