@@ -14,8 +14,8 @@
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage && start coverage/index.html"
+    "test:watch": "jest --coverage --collectCoverageFrom=src/components/AsyncAwaitButton.jsx --collectCoverageFrom=src/components/TimeoutButton.jsx --collectCoverageFrom=src/components/PromiseButton.jsx src/components/__tests__/AsyncAwaitButton.test.jsx src/components/__tests__/TimeoutButton.test.jsx src/components/__tests__/PromiseButton.test.jsx",
+    "test:coverage": "jest --coverage --collectCoverageFrom=src/components/AsyncAwaitButton.jsx --collectCoverageFrom=src/components/TimeoutButton.jsx --collectCoverageFrom=src/components/PromiseButton.jsx src/components/__tests__/AsyncAwaitButton.test.jsx src/components/__tests__/TimeoutButton.test.jsx src/components/__tests__/PromiseButton.test.jsx && start coverage/index.html"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -24,6 +24,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "babel-jest": "^29.7.0",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",

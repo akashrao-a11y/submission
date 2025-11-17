@@ -1,5 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import AsyncAwaitButton from './AsyncAwaitButton';
+import TimeoutButton from './TimeoutButton';
+import PromiseButton from './PromiseButton';
 
 function LandingPage() {
     const navigate = useNavigate();
@@ -114,6 +117,13 @@ function LandingPage() {
                     >
                         Learn More
                     </button>
+                </div>
+
+                {/* API Test Buttons Section */}
+                <div style={{ marginTop: '3rem', width: '100%', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+                    <AsyncAwaitButton />
+                    <TimeoutButton />
+                    <PromiseButton />
                 </div>
             </main>
         </div>

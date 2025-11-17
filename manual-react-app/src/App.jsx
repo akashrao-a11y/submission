@@ -3,6 +3,7 @@ import FIX_ERROR_01 from "./components/FIX_ERROR_01";
 import PeopleData from "./components/PeopleData";
 import FormContainer from "./components/FormContainer";
 import YourData from "./components/YourData";
+import ApiButtons from "./components/ApiButtons";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         padding: "0 1rem",
       }}
     >
+      <ApiButtons />
       <PeopleData/>
       <FormContainer />
       
