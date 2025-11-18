@@ -1,5 +1,9 @@
 import API_BASE_URL from './apiConfig';
 
+/**
+ * @param {string} token
+ * @returns {Promise<any[]>}
+ */
 export async function fetchBanks(token) {
   const response = await fetch(`${API_BASE_URL}/bank`, {
     headers: { 'Authorization': `Bearer ${token}` }
@@ -8,6 +12,11 @@ export async function fetchBanks(token) {
   return response.json();
 }
 
+/**
+ * @param {any} bank
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function addBank(bank, token) {
   const response = await fetch(`${API_BASE_URL}/bank`, {
     method: 'POST',
@@ -18,6 +27,11 @@ export async function addBank(bank, token) {
   return response.json();
 }
 
+/**
+ * @param {number} bankId
+ * @param {string} token
+ * @returns {Promise<any[]>}
+ */
 export async function fetchBranches(bankId, token) {
   const response = await fetch(`${API_BASE_URL}/bank/${bankId}/branches`, {
     headers: { 'Authorization': `Bearer ${token}` }
@@ -26,6 +40,12 @@ export async function fetchBranches(bankId, token) {
   return response.json();
 }
 
+/**
+ * @param {number} bankId
+ * @param {any} branch
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function addBranch(bankId, branch, token) {
   const response = await fetch(`${API_BASE_URL}/bank/${bankId}/branches`, {
     method: 'POST',

@@ -12,22 +12,40 @@ import ManageBanksPage from './pages/ManageBanksPage';
 import NotFoundPage from './pages/NotFoundPage';
 import BankDetailsPage from './pages/BankDetailsPage';
 import DashboardPage from './pages/DashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 import ProtectedRoute from './components/common/ProtectedRoute.jsx';
 import Navbar from './components/common/Navbar.jsx';
+
+
+// Role-based dashboard component
+function RoleBasedDashboard() {
+  const userStr = localStorage.getItem('user');
+  let role = '';
+  if (userStr) {
+    try {
+      const user = JSON.parse(userStr);
+      role = user.role || user.Role || '';
+    } catch {}
+  }
+  if (role === 'Sysadmin') {
+    return <AdminDashboardPage />;
+  }
+  return <DashboardPage />;
+}
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/about" element={<AboutPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/plans" element={<PlansPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
-            <DashboardPage />
+            <RoleBasedDashboard />
           </ProtectedRoute>
         } />
         {/* AccountsPage removed, use DashboardPage instead */}

@@ -8,7 +8,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Sysadmin")]
+
     public class BankController : ControllerBase
     {
         private readonly AppDbContext _context;

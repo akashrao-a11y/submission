@@ -2,6 +2,11 @@
 import API_BASE_URL from './apiConfig';
 
 // Create a new account
+/**
+ * @param {any} account
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function createAccount(account, token) {
   const response = await fetch(`${API_BASE_URL}/accounts/create`, {
     method: 'POST',
@@ -15,6 +20,10 @@ export async function createAccount(account, token) {
   return response.json();
 }
 
+/**
+ * @param {string} token
+ * @returns {Promise<any[]>}
+ */
 export async function fetchAccounts(token) {
   console.log('fetchAccounts: token =', token);
   const url = `${API_BASE_URL}/accounts`;
@@ -29,6 +38,12 @@ export async function fetchAccounts(token) {
   return response.json();
 }
 
+/**
+ * @param {number} accountId
+ * @param {number} amount
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function deposit(accountId, amount, token) {
   const response = await fetch(`${API_BASE_URL}/accounts/${accountId}/deposit?amount=${amount}`, {
     method: 'POST',
@@ -38,6 +53,12 @@ export async function deposit(accountId, amount, token) {
   return response.json();
 }
 
+/**
+ * @param {number} accountId
+ * @param {number} amount
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function withdraw(accountId, amount, token) {
   const response = await fetch(`${API_BASE_URL}/accounts/${accountId}/withdraw?amount=${amount}`, {
     method: 'POST',
@@ -48,6 +69,13 @@ export async function withdraw(accountId, amount, token) {
 }
 
 // Transfer funds between accounts
+/**
+ * @param {number} fromAccountId
+ * @param {number} toAccountId
+ * @param {number} amount
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function transfer(fromAccountId, toAccountId, amount, token) {
   const response = await fetch(`${API_BASE_URL}/accounts/transfer`, {
     method: 'POST',
@@ -59,6 +87,11 @@ export async function transfer(fromAccountId, toAccountId, amount, token) {
 }
 
 // Close account
+/**
+ * @param {number} accountId
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
 export async function closeAccount(accountId, token) {
   const response = await fetch(`${API_BASE_URL}/accounts/${accountId}/close`, {
     method: 'POST',

@@ -33,9 +33,12 @@ const DashboardPage = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch(`${API_BASE_URL}/accounts/by-account-number/${accountNumber}`);
-        if (!response.ok) throw new Error('Failed to fetch account');
-        const data = await response.json();
+        const response = await fetch(`${API_BASE_URL}/accounts`);
+        if (!response.ok) throw new Error('Failed to fetch accounts');
+        const accounts = await response.json();
+        // Find the account matching the user's account number
+        const data = Array.isArray(accounts) ? accounts.find(a => a.accountNumber === accountNumber) : null;
+        if (!data) throw new Error('Account not found');
         setAccount(data);
         if (data && data.accountId) {
           localStorage.setItem('accountId', data.accountId);
@@ -75,10 +78,11 @@ const DashboardPage = () => {
       const data = await response.json();
       setTxnSuccess(data.Message || 'Transaction successful');
       // Refresh account info
-      const accRes = await fetch(`${API_BASE_URL}/accounts/by-account-number/${account.accountNumber}`);
+      const accRes = await fetch(`${API_BASE_URL}/accounts`);
       if (accRes.ok) {
-        const accData = await accRes.json();
-        setAccount(accData);
+        const accounts = await accRes.json();
+        const accData = Array.isArray(accounts) ? accounts.find(a => a.accountNumber === account.accountNumber) : null;
+        if (accData) setAccount(accData);
       }
       setAmount('');
     } catch (err) {

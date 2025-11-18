@@ -20,15 +20,16 @@ namespace BankManagementSystem.Controllers
 
 
 
-        [HttpGet("by-account-number/{accountNumber}")]
+
+        [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetByAccountNumber(string accountNumber)
+        public async Task<IActionResult> GetAllAccounts()
         {
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
-            if (account == null)
-                return NotFound("Account not found.");
-            return Ok(account);
+            var accounts = await _context.Accounts.ToListAsync();
+            return Ok(accounts);
         }
+
+
 
         [HttpPost("create")]
         [AllowAnonymous]

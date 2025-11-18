@@ -10,7 +10,10 @@ import API_BASE_URL from '../services/apiConfig';
 const LoginPage = () => {
 
   const navigate = useNavigate();
+  const [loginMode, setLoginMode] = useState('user'); // 'user' or 'sysadmin'
   const [accountNumber, setAccountNumber] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState('');
   const [showRegister, setShowRegister] = useState(false);
   // Registration fields
@@ -23,19 +26,50 @@ const LoginPage = () => {
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [createdAccountNumber, setCreatedAccountNumber] = useState('');
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!accountNumber) {
-      setError('Account number is required');
-      return;
+    if (loginMode === 'user') {
+      if (!accountNumber) {
+        setError('Account number is required');
+        return;
+      }
+      localStorage.setItem('accountNumber', accountNumber);
+      navigate('/dashboard');
+    } else {
+      // Sysadmin login
+      if (!adminEmail || !adminPassword) {
+        setError('Email and password are required');
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: adminEmail, password: adminPassword })
+        });
+        if (!response.ok) throw new Error('Invalid email or password');
+        const data = await response.json();
+        if (data.Role && data.Role !== 'Sysadmin' && data.role !== 'Sysadmin') {
+          setError('Not a sysadmin account');
+          return;
+        }
+        localStorage.setItem('token', data.Token);
+        localStorage.setItem('user', JSON.stringify({ fullName: data.FullName || '', role: data.Role || data.role || '' }));
+        navigate('/dashboard');
+      } catch (err) {
+        let msg = 'Login failed';
+        if (err && typeof err === 'object') {
+          if ('message' in err && typeof err.message === 'string') msg = err.message;
+          else if (err.toString && typeof err.toString === 'function') msg = String(err.toString());
+        }
+        setError(String(msg));
+      }
     }
-    localStorage.setItem('accountNumber', accountNumber);
-    navigate('/dashboard');
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const handleRegister = async () => {
     setError('');
     setRegisterSuccess('');
     setCreatedAccountNumber('');
@@ -61,7 +95,12 @@ const LoginPage = () => {
       setRegisterSuccess('Account created successfully!');
       setCreatedAccountNumber(data.AccountNumber || data.accountNumber || '');
     } catch (err) {
-      setError(err.message || 'Failed to create account');
+      let msg = 'Failed to create account';
+      if (err && typeof err === 'object') {
+        if ('message' in err && typeof err.message === 'string') msg = err.message;
+        else if (err.toString && typeof err.toString === 'function') msg = String(err.toString());
+      }
+      setError(String(msg));
     }
   };
 
@@ -70,14 +109,37 @@ const LoginPage = () => {
       {!showRegister ? (
         <>
           <h1>Login</h1>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 18, justifyContent: 'center' }}>
+            <button type="button" style={{ padding: '6px 18px', borderRadius: 6, border: loginMode === 'user' ? '2px solid #1976d2' : '1.5px solid #bfc7d1', background: loginMode === 'user' ? '#e3e9f7' : '#fff', fontWeight: 600, color: loginMode === 'user' ? '#1976d2' : '#333', cursor: 'pointer' }} onClick={() => setLoginMode('user')}>User Login</button>
+            <button type="button" style={{ padding: '6px 18px', borderRadius: 6, border: loginMode === 'sysadmin' ? '2px solid #1976d2' : '1.5px solid #bfc7d1', background: loginMode === 'sysadmin' ? '#e3e9f7' : '#fff', fontWeight: 600, color: loginMode === 'sysadmin' ? '#1976d2' : '#333', cursor: 'pointer' }} onClick={() => setLoginMode('sysadmin')}>Sysadmin Login</button>
+          </div>
           <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Account Number"
-              value={accountNumber}
-              onChange={e => setAccountNumber(e.target.value)}
-              required
-            />
+            {loginMode === 'user' ? (
+              <input
+                type="text"
+                placeholder="Account Number"
+                value={accountNumber}
+                onChange={e => setAccountNumber(e.target.value)}
+                required
+              />
+            ) : (
+              <>
+                <input
+                  type="email"
+                  placeholder="Sysadmin Email"
+                  value={adminEmail}
+                  onChange={e => setAdminEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={adminPassword}
+                  onChange={e => setAdminPassword(e.target.value)}
+                  required
+                />
+              </>
+            )}
             <button type="submit">Login</button>
           </form>
           <button className="toggle-btn" onClick={() => setShowRegister(true)}>New user? Register here</button>

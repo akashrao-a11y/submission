@@ -33,6 +33,7 @@ namespace BankManagementSystem.Controllers
             _config = config;
         }
 
+
         public class RegisterRequest
         {
             [System.ComponentModel.DataAnnotations.Required]
@@ -50,6 +51,9 @@ namespace BankManagementSystem.Controllers
             [System.ComponentModel.DataAnnotations.Required]
             [System.Text.Json.Serialization.JsonPropertyName("password")]
             public string Password { get; set; }
+
+            [System.Text.Json.Serialization.JsonPropertyName("role")]
+            public string Role { get; set; } = "User"; // "User" or "Sysadmin"
         }
 
         [HttpPost("register")]
@@ -66,12 +70,13 @@ namespace BankManagementSystem.Controllers
                 return BadRequest(new { message = "Email already registered." });
             }
 
+
             var user = new User
             {
                 FullName = $"{request.FirstName} {request.LastName}",
                 Email = request.Email,
                 PasswordHash = request.Password, // In production, hash the password!
-                Role = "User",
+                Role = string.IsNullOrWhiteSpace(request.Role) ? "User" : request.Role,
                 CreatedAt = DateTime.UtcNow,
                 Status = true
             };
