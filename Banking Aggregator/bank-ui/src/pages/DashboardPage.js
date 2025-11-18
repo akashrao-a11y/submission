@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import API_BASE_URL from '../services/apiConfig';
 import '../AppTheme.css';
@@ -15,10 +13,6 @@ function getUserName() {
   } catch (err) {}
   return 'Demo User';
 }
-
-
-
-
 
 const DashboardPage = () => {
 
@@ -63,10 +57,9 @@ const DashboardPage = () => {
     }
   }, [accountNumber]);
 
+  const handleTransaction = async (event) => {
+    if (event) event.preventDefault(); // ⭐ Added from the other DashboardPage.js
 
-
-
-  const handleTransaction = async () => {
     setTxnError('');
     setTxnSuccess('');
     setTxnLoading(true);
@@ -79,6 +72,7 @@ const DashboardPage = () => {
       if (!response.ok) throw new Error('Transaction failed');
       const data = await response.json();
       setTxnSuccess(data.Message || 'Transaction successful');
+
       // Refresh account info
       const accRes = await fetch(`${API_BASE_URL}/accounts`);
       if (accRes.ok) {
@@ -156,14 +150,17 @@ const DashboardPage = () => {
             <div style={{ fontSize: '1rem', color: '#1976d2', fontWeight: 500 }}>{account.accountType} Account</div>
           </div>
         </div>
+
         <div style={{ fontSize: '2.6rem', fontWeight: 700, color: '#1a237e', marginBottom: 18, letterSpacing: 1, textShadow: '0 2px 8px #1976d211' }}>
           ₹ {account.balance?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
         </div>
+
         <div style={{ fontSize: '1.1rem', color: '#555', marginBottom: 10 }}>
           <span style={{ background: '#e3e9f7', color: '#1976d2', borderRadius: 8, padding: '4px 12px', fontWeight: 600 }}>
             A/C: {account.accountNumber}
           </span>
         </div>
+
         <div style={{ fontSize: '1.08rem', color: '#333', marginBottom: 6 }}>
           <b>Bank:</b> {account.bankName || account.BankName}
         </div>
@@ -176,14 +173,17 @@ const DashboardPage = () => {
         <div style={{ fontSize: '1.08rem', color: '#333', marginBottom: 6 }}>
           <b>User ID:</b> {account.userId}
         </div>
+
         <button onClick={handleDeactivate} style={{ marginTop: 18, background: '#d32f2f', color: '#fff', border: 'none', borderRadius: 7, padding: '0.7rem 1.2rem', fontWeight: 600, fontSize: '1rem', boxShadow: '0 2px 8px #d32f2f22', cursor: 'pointer', transition: 'background 0.2s' }}>
           Deactivate My Account
         </button>
         {deactivateMsg && <div style={{ color: '#388e3c', background: '#e8f5e9', border: '1px solid #a5d6a7', borderRadius: 6, padding: '0.7rem 1rem', marginTop: 10 }}>{deactivateMsg}</div>}
         {deactivateError && <div style={{ color: '#d32f2f', background: '#fff3f3', border: '1px solid #ffcdd2', borderRadius: 6, padding: '0.7rem 1rem', marginTop: 10 }}>{deactivateError}</div>}
       </div>
+
       <form onSubmit={handleTransaction} style={{ minWidth: 340, maxWidth: 400, background: '#f7f9fc', borderRadius: 20, boxShadow: '0 2px 16px #0001', padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'stretch', border: '1.5px solid #e3e9f7' }}>
         <h3 style={{ margin: 0, color: '#1976d2', fontWeight: 700, fontSize: '1.15rem' }}>Deposit / Withdraw</h3>
+
         <input
           type="number"
           placeholder="Amount"
@@ -193,13 +193,16 @@ const DashboardPage = () => {
           required
           style={{ padding: '0.7rem 1rem', border: '1.5px solid #bfc7d1', borderRadius: 7, fontSize: '1rem', background: '#fff' }}
         />
+
         <select value={txnType} onChange={e => setTxnType(e.target.value)} style={{ padding: '0.7rem 1rem', border: '1.5px solid #bfc7d1', borderRadius: 7, fontSize: '1rem', background: '#fff' }}>
           <option value="deposit">Deposit</option>
           <option value="withdraw">Withdraw</option>
         </select>
+
         <button type="submit" disabled={txnLoading} style={{ background: '#1976d2', color: '#fff', border: 'none', borderRadius: 7, padding: '0.8rem 0', fontWeight: 600, fontSize: '1.1rem', marginTop: 8, boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)' }}>
           {txnLoading ? 'Processing...' : 'Submit'}
         </button>
+
         {txnError && <div style={{ color: '#d32f2f', background: '#fff3f3', border: '1px solid #ffcdd2', borderRadius: 6, padding: '0.7rem 1rem', marginTop: 4 }}>{txnError}</div>}
         {txnSuccess && <div style={{ color: '#388e3c', background: '#e8f5e9', border: '1px solid #a5d6a7', borderRadius: 6, padding: '0.7rem 1rem', marginTop: 4 }}>{txnSuccess}</div>}
       </form>

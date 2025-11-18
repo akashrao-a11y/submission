@@ -1,18 +1,7 @@
 import React from 'react';
 
 const AboutPage = () => {
-  const [form, setForm] = React.useState({ name: '', email: '', message: '' });
-  const [submitted, setSubmitted] = React.useState(false);
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    setSubmitted(true);
-    // Here you would send the form data to your backend or email service
-  };
 
   return (
     <div style={{ maxWidth: 700, margin: '0 auto', padding: '2.5rem 1rem' }}>
@@ -23,24 +12,23 @@ const AboutPage = () => {
           Our mission is to simplify your financial life with a modern, secure, and user-friendly experience.
         </p>
       </div>
-      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px #0001', padding: '2.2rem 2rem', maxWidth: 520, margin: '0 auto' }}>
-        <h2 style={{ color: '#1976d2', fontWeight: 600, fontSize: '1.3rem', marginBottom: 18, textAlign: 'center' }}>Contact Us</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="contact-name" style={{ fontWeight: 500, color: '#222' }}>Name</label>
-            <input id="contact-name" type="text" name="name" value={form.name} onChange={handleChange} required style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #bfc7d1', fontSize: '1rem', background: '#f7f9fc' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="contact-email" style={{ fontWeight: 500, color: '#222' }}>Email</label>
-            <input id="contact-email" type="email" name="email" value={form.email} onChange={handleChange} required style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #bfc7d1', fontSize: '1rem', background: '#f7f9fc' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="contact-message" style={{ fontWeight: 500, color: '#222' }}>Message</label>
-            <textarea id="contact-message" name="message" value={form.message} onChange={handleChange} required rows={4} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #bfc7d1', fontSize: '1rem', background: '#f7f9fc', resize: 'vertical' }} />
-          </div>
-          <button type="submit" style={{ background: 'linear-gradient(90deg, #1976d2 60%, #64b5f6 100%)', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', fontWeight: 700, fontSize: '1.08rem', marginTop: 8, boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)', letterSpacing: 0.5 }}>Send Message</button>
-          {submitted && <div style={{ color: '#388e3c', background: '#e8f5e9', border: '1px solid #a5d6a7', borderRadius: 7, padding: '0.8rem 1.1rem', marginTop: 8, textAlign: 'center', fontWeight: 500 }}>Thank you for contacting us!</div>}
-        </form>
+      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px #0001', padding: '2.2rem 2rem', maxWidth: 650, margin: '0 auto' }}>
+        <h2 style={{ color: '#1976d2', fontWeight: 600, fontSize: '1.3rem', marginBottom: 18, textAlign: 'center' }}>Why Choose Us?</h2>
+        <ul style={{ fontSize: '1.08rem', color: '#333', marginBottom: 18, lineHeight: 1.7, paddingLeft: 24 }}>
+          <li><b>Unified Dashboard:</b> View and manage all your bank accounts from different banks in one secure place.</li>
+          <li><b>Modern UI/UX:</b> Enjoy a beautiful, responsive, and intuitive interface designed for ease of use on any device.</li>
+          <li><b>Powerful Admin Tools:</b> Sysadmins can manage users, banks, and accounts with advanced controls and real-time updates.</li>
+          <li><b>Secure Authentication:</b> Robust login and account management with role-based access for users and sysadmins.</li>
+          <li><b>Self-Service Account Creation:</b> Users can create their own accounts after registration, with clear guidance and instant feedback.</li>
+          <li><b>Comprehensive Support:</b> Dedicated support team available via the Contact Us page for any queries or issues.</li>
+        </ul>
+        <h3 style={{ color: '#1976d2', fontWeight: 600, fontSize: '1.1rem', marginBottom: 10 }}>Our Values</h3>
+        <ul style={{ fontSize: '1.05rem', color: '#444', marginBottom: 0, lineHeight: 1.6, paddingLeft: 24 }}>
+          <li><b>Transparency:</b> No hidden fees, clear communication, and open processes.</li>
+          <li><b>Security:</b> Your data and privacy are our top priority, with industry-standard encryption and best practices.</li>
+          <li><b>Innovation:</b> We continuously improve our platform to bring you the latest in fintech convenience.</li>
+          <li><b>Customer Focus:</b> Your experience matters—our features and support are built around your needs.</li>
+        </ul>
       </div>
     </div>
   );
