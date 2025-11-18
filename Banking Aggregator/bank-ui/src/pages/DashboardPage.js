@@ -7,10 +7,12 @@ import '../AppTheme.css';
 
 function getUserName() {
   try {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return 'Demo User';
+    const user = JSON.parse(userStr);
     if (user && user.fullName) return user.fullName;
     if (user && user.name) return user.name;
-  } catch {}
+  } catch (err) {}
   return 'Demo User';
 }
 
@@ -35,6 +37,9 @@ const DashboardPage = () => {
         if (!response.ok) throw new Error('Failed to fetch account');
         const data = await response.json();
         setAccount(data);
+        if (data && data.accountId) {
+          localStorage.setItem('accountId', data.accountId);
+        }
       } catch (err) {
         setError('Failed to load account');
       }
@@ -56,8 +61,7 @@ const DashboardPage = () => {
   const [txnSuccess, setTxnSuccess] = useState('');
   const [txnLoading, setTxnLoading] = useState(false);
 
-  const handleTransaction = async (e) => {
-    e.preventDefault();
+  const handleTransaction = async () => {
     setTxnError('');
     setTxnSuccess('');
     setTxnLoading(true);
@@ -78,7 +82,12 @@ const DashboardPage = () => {
       }
       setAmount('');
     } catch (err) {
-      setTxnError(err.message || 'Transaction failed');
+      let msg = 'Transaction failed';
+      if (err && typeof err === 'object') {
+        if ('message' in err && typeof err.message === 'string') msg = err.message;
+        else if (err.toString && typeof err.toString === 'function') msg = String(err.toString());
+      }
+      setTxnError(String(msg));
     }
     setTxnLoading(false);
   };

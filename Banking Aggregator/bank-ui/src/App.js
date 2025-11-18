@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Home from './pages/Home';
-import About from './pages/About';
+import AboutPage from './pages/AboutPage';
 import PlansPage from './pages/PlansPage';
 import LoginPage from './pages/LoginPage';
-import AccountsPage from './pages/AccountsPage';
+// import AccountsPage from './pages/AccountsPage';
 import TransactionsPage from './pages/TransactionsPage';
 import ManageUsersPage from './pages/ManageUsersPage';
 import ManageBanksPage from './pages/ManageBanksPage';
@@ -22,7 +22,7 @@ const App = () => {
       <Navbar />
       <Routes>
   <Route path="/" element={<Home />} />
-  <Route path="/about" element={<About />} />
+  <Route path="/about" element={<AboutPage />} />
         <Route path="/plans" element={<PlansPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={
@@ -30,11 +30,7 @@ const App = () => {
             <DashboardPage />
           </ProtectedRoute>
         } />
-        <Route path="/accounts" element={
-          <ProtectedRoute>
-            <AccountsPage />
-          </ProtectedRoute>
-        } />
+        {/* AccountsPage removed, use DashboardPage instead */}
         <Route path="/transactions" element={
           <ProtectedRoute>
             <TransactionsPage />

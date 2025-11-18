@@ -46,24 +46,27 @@ const TransactionsPage = () => {
     fetchTransactions();
   }, [accountId]);
 
-  const handleFilter = (e) => {
-    e.preventDefault();
+  const handleFilter = () => {
     // Triggers useEffect or can be used to filter by date if implemented
   };
 
-  const filteredTransactions = transactions.filter(
-    /** @param {any} tx */
-    function (tx) {
-      if (search) {
-        return (
-          (tx.accountId + '').includes(search) ||
-          (tx.type || '').toLowerCase().includes(search.toLowerCase()) ||
-          (tx.description || '').toLowerCase().includes(search.toLowerCase())
-        );
+  /** @type {Array<any>} */
+  let filteredTransactions = [];
+  if (Array.isArray(transactions)) {
+    filteredTransactions = transactions.filter(
+      /** @param {any} tx */
+      function (tx) {
+        if (search) {
+          return (
+            (tx.accountId + '').includes(search) ||
+            (tx.type || '').toLowerCase().includes(search.toLowerCase()) ||
+            (tx.description || '').toLowerCase().includes(search.toLowerCase())
+          );
+        }
+        return true;
       }
-      return true;
-    }
-  );
+    );
+  }
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>

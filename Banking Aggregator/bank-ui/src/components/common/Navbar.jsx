@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-  {user && <Link to="/accounts">Accounts</Link>}
+  {user && <Link to="/dashboard">Dashboard</Link>}
   {user && <Link to="/transactions">Transactions</Link>}
   {user && user.role === 'Sysadmin' && <Link to="/manage-users">Manage Users</Link>}
   {user && user.role === 'Sysadmin' && <Link to="/manage-banks">Manage Banks</Link>}
