@@ -76,9 +76,9 @@ const AdminDashboardPage = () => {
         setCreateUserSuccess('');
         try {
             const { firstName, lastName, email, password, role } = newUser;
-            await register(firstName, lastName, email, password, role);
+            const result = await register(firstName, lastName, email, password, role);
             setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'User' });
-            setCreateUserSuccess('User created successfully!');
+            setCreateUserSuccess(`User created successfully! User ID: ${result.userId || ''}`);
             // Refresh user list
             const usersData = await fetchUsers(token || '');
             setUsers(usersData);

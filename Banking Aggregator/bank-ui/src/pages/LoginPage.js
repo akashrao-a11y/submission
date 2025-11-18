@@ -12,7 +12,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loginMode, setLoginMode] = useState('user'); // 'user' or 'sysadmin'
   const [accountNumber, setAccountNumber] = useState('');
-  const [accountPassword, setAccountPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,6 +25,8 @@ const LoginPage = () => {
   const [accountType, setAccountType] = useState('Savings');
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [createdAccountNumber, setCreatedAccountNumber] = useState('');
+  const [name, setName] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
 
 
   const handleSubmit = async (e) => {
@@ -93,7 +94,7 @@ const LoginPage = () => {
     setError('');
     setRegisterSuccess('');
     setCreatedAccountNumber('');
-    if (!userId || !bankId || !bankName || !branch || !state || !accountType) {
+    if (!userId || !bankId || !bankName || !branch || !state || !accountType || !name || !accountPassword) {
       setError('All fields are required');
       return;
     }
@@ -107,13 +108,16 @@ const LoginPage = () => {
           bankName,
           branch,
           state,
-          accountType
+          accountType,
+          name,
+          accountPassword
         })
       });
       if (!response.ok) throw new Error('Failed to create account');
       const data = await response.json();
-      setRegisterSuccess('Account created successfully!');
-      setCreatedAccountNumber(data.AccountNumber || data.accountNumber || '');
+  const accNum = data.AccountNumber || data.accountNumber || '';
+  setCreatedAccountNumber(accNum);
+  setRegisterSuccess(accNum ? `Account created successfully!\nYour Account Number: ${accNum}` : 'Account created successfully!');
     } catch (err) {
       let msg = 'Failed to create account';
       if (err && typeof err === 'object') {
@@ -177,10 +181,13 @@ const LoginPage = () => {
       ) : (
         <>
           <h1>Register Account</h1>
+          <div style={{ marginBottom: 12, color: '#1976d2', fontWeight: 500, fontSize: '1rem', textAlign: 'center' }}>
+            <span>Ask your sysadmin for your <b>User ID</b> after registration.<br/>Enter it below to create your account.</span>
+          </div>
           <form onSubmit={handleRegister}>
             <input
               type="text"
-              placeholder="User ID"
+              placeholder="User ID (provided by sysadmin)"
               value={userId}
               onChange={e => setUserId(e.target.value)}
               required
@@ -213,6 +220,20 @@ const LoginPage = () => {
               onChange={e => setState(e.target.value)}
               required
             />
+            <input
+              type="text"
+              placeholder="Name (Account Holder)"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Account Password"
+              value={accountPassword}
+              onChange={e => setAccountPassword(e.target.value)}
+              required
+            />
             <select value={accountType} onChange={e => setAccountType(e.target.value)} required>
               <option value="Savings">Savings</option>
               <option value="Checking">Checking</option>
@@ -222,13 +243,8 @@ const LoginPage = () => {
           <button className="toggle-btn" onClick={() => setShowRegister(false)}>Back to Login</button>
           {error && <div className="error-message">{error}</div>}
           {registerSuccess && (
-            <div className="success-message">
+            <div className="success-message" style={{ whiteSpace: 'pre-line' }}>
               {registerSuccess}
-              {createdAccountNumber && (
-                <div style={{ marginTop: 8 }}>
-                  <b>Your Account Number:</b> <span style={{ color: '#1976d2', fontWeight: 700 }}>{createdAccountNumber}</span>
-                </div>
-              )}
             </div>
           )}
         </>
