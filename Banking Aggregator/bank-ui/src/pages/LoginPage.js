@@ -12,6 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loginMode, setLoginMode] = useState('user'); // 'user' or 'sysadmin'
   const [accountNumber, setAccountNumber] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState('');
@@ -31,12 +32,31 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     if (loginMode === 'user') {
-      if (!accountNumber) {
-        setError('Account number is required');
+      if (!accountNumber || !accountPassword) {
+        setError('Account number and password are required');
         return;
       }
-      localStorage.setItem('accountNumber', accountNumber);
-      navigate('/dashboard');
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accountNumber, accountPassword })
+        });
+        if (!response.ok) throw new Error('Invalid account number or password');
+        const data = await response.json();
+        localStorage.setItem('token', data.Token);
+        localStorage.setItem('user', JSON.stringify({ fullName: data.FullName || '', role: data.Role || data.role || '' }));
+        localStorage.setItem('accountId', data.accountId);
+        localStorage.setItem('accountNumber', data.accountNumber);
+        navigate('/dashboard');
+      } catch (err) {
+        let msg = 'Login failed';
+        if (err && typeof err === 'object') {
+          if ('message' in err && typeof err.message === 'string') msg = err.message;
+          else if (err.toString && typeof err.toString === 'function') msg = String(err.toString());
+        }
+        setError(String(msg));
+      }
     } else {
       // Sysadmin login
       if (!adminEmail || !adminPassword) {
@@ -115,13 +135,22 @@ const LoginPage = () => {
           </div>
           <form onSubmit={handleSubmit}>
             {loginMode === 'user' ? (
-              <input
-                type="text"
-                placeholder="Account Number"
-                value={accountNumber}
-                onChange={e => setAccountNumber(e.target.value)}
-                required
-              />
+              <>
+                <input
+                  type="text"
+                  placeholder="Account Number"
+                  value={accountNumber}
+                  onChange={e => setAccountNumber(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Account Password"
+                  value={accountPassword}
+                  onChange={e => setAccountPassword(e.target.value)}
+                  required
+                />
+              </>
             ) : (
               <>
                 <input

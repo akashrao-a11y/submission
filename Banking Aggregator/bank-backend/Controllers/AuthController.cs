@@ -11,14 +11,7 @@ using System.Text;
 
 namespace BankManagementSystem.Controllers
 {
-    public class LoginRequest
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("email")]
-        public string Email { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("password")]
-        public string Password { get; set; }
-    }
+    // public class LoginRequest removed, replaced by AccountLoginRequest in Models
 
     [Route("api/[controller]")]
     [ApiController]
@@ -84,20 +77,48 @@ namespace BankManagementSystem.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "User registered successfully!" });
+            return Ok(new { message = "User registered successfully!", userId = user.UserId });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] object request)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email && u.PasswordHash == request.Password);
-
-            if (user == null)
-                return Unauthorized(new { message = "Invalid email or password." });
-
-            var token = GenerateJwtToken(user);
-            return Ok(new { Token = token, user.FullName, user.Role });
+            // Try to bind to AdminLoginRequest first
+            try
+            {
+                var adminReq = System.Text.Json.JsonSerializer.Deserialize<BankManagementSystem.Models.AdminLoginRequest>(request.ToString());
+                if (!string.IsNullOrWhiteSpace(adminReq?.Email) && !string.IsNullOrWhiteSpace(adminReq?.Password))
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == adminReq.Email && u.PasswordHash == adminReq.Password);
+                    if (user == null)
+                        return Unauthorized(new { message = "Invalid email or password." });
+                    if (user.Role != null && user.Role.ToLower() == "sysadmin")
+                    {
+                        var token = GenerateJwtToken(user);
+                        return Ok(new { Token = token, user.FullName, user.Role });
+                    }
+                    return Unauthorized(new { message = "Not a sysadmin account." });
+                }
+            }
+            catch { }
+            // Try to bind to AccountLoginRequest for user login
+            try
+            {
+                var accReq = System.Text.Json.JsonSerializer.Deserialize<BankManagementSystem.Models.AccountLoginRequest>(request.ToString());
+                if (!string.IsNullOrWhiteSpace(accReq?.AccountNumber) && !string.IsNullOrWhiteSpace(accReq?.AccountPassword))
+                {
+                    var account = await _context.Accounts
+                        .Include(a => a.User)
+                        .FirstOrDefaultAsync(a => a.AccountNumber == accReq.AccountNumber && a.AccountPassword == accReq.AccountPassword);
+                    if (account == null)
+                        return Unauthorized(new { message = "Invalid account number or password." });
+                    var user = account.User;
+                    var token = GenerateJwtToken(user);
+                    return Ok(new { Token = token, user.FullName, user.Role, accountId = account.AccountId, accountNumber = account.AccountNumber });
+                }
+            }
+            catch { }
+            return BadRequest(new { message = "Invalid login request." });
         }
 
         private string GenerateJwtToken(User user)

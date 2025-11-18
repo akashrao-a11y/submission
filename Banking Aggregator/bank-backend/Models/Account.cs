@@ -7,35 +7,41 @@ namespace BankManagementSystem.Models
     public class Account
     {
         [Key]
-    public int AccountId { get; set; }
+        public int AccountId { get; set; }
 
-    public string AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
 
-    [Required]
-    public int UserId { get; set; }
+        [Required]
+        public int UserId { get; set; }
 
-    [Required]
-    public int BankId { get; set; }
+        [Required]
+        public int BankId { get; set; }
 
-    [Required]
-    public string BankName { get; set; }
+        [Required]
+        public string BankName { get; set; }
 
-    [Required]
-    public string Branch { get; set; }
+        [Required]
+        public string Branch { get; set; }
 
-    [Required]
-    public string State { get; set; }
+        [Required]
+        public string State { get; set; }
 
-    [Required]
-    public string AccountType { get; set; }
+        [Required]
+        public string AccountType { get; set; }
 
-    public decimal Balance { get; set; } = 0;
+        [Required]
+        public string Name { get; set; }
 
-    [ForeignKey("UserId")]
-    public User User { get; set; }
+        [Required]
+        public string AccountPassword { get; set; }
 
-    [ForeignKey("BankId")]
-    public Bank Bank { get; set; }
+        public decimal Balance { get; set; } = 0;
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+
+        [ForeignKey("BankId")]
+        public Bank Bank { get; set; }
     }
     public class TransferRequest
     {

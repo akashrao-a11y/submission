@@ -33,9 +33,10 @@ namespace BankManagementSystem.Controllers
 
         [HttpPost("create")]
         [AllowAnonymous]
+
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest req)
         {
-            // Require UserId, BankId, BankName, Branch, State, AccountType
+            // Require UserId, BankId, BankName, Branch, State, AccountType, Name, AccountPassword
             var user = await _context.Users.FindAsync(req.UserId);
             if (user == null)
                 return NotFound("User not found.");
@@ -57,6 +58,8 @@ namespace BankManagementSystem.Controllers
                 State = req.State,
                 AccountType = req.AccountType,
                 AccountNumber = accountNumber,
+                Name = req.Name,
+                AccountPassword = req.AccountPassword,
                 Balance = 0
             };
 
@@ -74,6 +77,8 @@ namespace BankManagementSystem.Controllers
             public string Branch { get; set; }
             public string State { get; set; }
             public string AccountType { get; set; }
+            public string Name { get; set; }
+            public string AccountPassword { get; set; }
         }
 
 

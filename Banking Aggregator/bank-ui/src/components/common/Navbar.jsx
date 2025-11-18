@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../services/authService';
 import '../../AppTheme.css';
@@ -17,12 +17,25 @@ const getUser = () => {
 
 const Navbar = () => {
   const navigate = useNavigate();
+  /** @type {[any, Function]} */
+  const [user, setUser] = useState(getUser());
   const [loggedIn, setLoggedIn] = useState(!!getUser());
-  const user = getUser();
+
+  useEffect(() => {
+    const check = () => {
+      const u = getUser();
+      setUser(u);
+      setLoggedIn(!!u);
+    };
+    window.addEventListener('storage', check);
+    return () => window.removeEventListener('storage', check);
+  }, []);
+
 
   const handleLogout = () => {
     logout();
     setLoggedIn(false);
+    setUser(null);
     navigate('/login');
   };
 
@@ -32,12 +45,12 @@ const Navbar = () => {
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-  {user && <Link to="/dashboard">Dashboard</Link>}
-  {user && <Link to="/transactions">Transactions</Link>}
-  {user && user.role === 'Sysadmin' && <Link to="/manage-users">Manage Users</Link>}
-  {user && user.role === 'Sysadmin' && <Link to="/manage-banks">Manage Banks</Link>}
-  {!getUser() && <Link to="/login">Login</Link>}
-  {getUser() && <button className="navbar-logout" onClick={handleLogout}>Logout</button>}
+        {loggedIn && <Link to="/dashboard">Dashboard</Link>}
+        {loggedIn && <Link to="/transactions">Transactions</Link>}
+        {loggedIn && user && user.role === 'Sysadmin' && <Link to="/manage-users">Manage Users</Link>}
+        {loggedIn && user && user.role === 'Sysadmin' && <Link to="/manage-banks">Manage Banks</Link>}
+        {!loggedIn && <Link to="/login">Login</Link>}
+        {loggedIn && <button className="navbar-logout" onClick={handleLogout}>Logout</button>}
       </div>
     </nav>
   );
